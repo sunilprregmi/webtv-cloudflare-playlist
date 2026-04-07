@@ -46,7 +46,7 @@ This is a lightweight, personal-use tool designed to interface with official Net
 2.  **KV Namespace**: 
     * Create a KV namespace named `geniusTVtoken`.
     * Bind it to your Worker with the variable name `geniusTVtoken`.
-3.  **Authentication**: Access the root URL of your worker to login and generate the initial session.
+3.  **Authentication**: Access the `/login` path of your worker to login and generate the initial session.
 
 ---
 
