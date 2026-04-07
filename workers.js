@@ -62,7 +62,7 @@ async function handlePlaylistRequest(workerOrigin) {
     });
   });
 
-  let m3u8 = `#EXTM3U x-tvg-url="https://epgs.sunilprasad.com.np/webtv.xml.gz"\n`;
+  let m3u8 = `#EXTM3U x-tvg-url="https://epgs.nettv.com.np/webtv.xml.gz"\n`;
 	  m3u8 += '# FOSS Project Of Sunil Prasad @ sunilprasad.com.np\n\n';
 	  m3u8 += '# STRICT WARNING: This is a private server.\n';
 	  m3u8 += '# No one is authorized to use this except owner him/herself.\n';
