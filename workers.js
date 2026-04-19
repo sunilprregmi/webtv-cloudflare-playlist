@@ -24,7 +24,11 @@ async function handleRequest(req) {
   const path = url.pathname;
 
   if (req.method === 'GET') {
-    if (path === '/login') return renderLoginPage();
+    if (path === '/login') {
+      const session = await geniusTVtoken.get('Login');
+      if (session) { return new Response('Not Found!', { status: 404 }); }
+      return renderLoginPage();
+    }
     if (path === '/playlist') return handlePlaylistRequest(url.origin);
     if (path === '/refresh') return handleRefreshToken();
     if (path === '/wms') return handleWmsRequest();
@@ -66,7 +70,7 @@ async function handlePlaylistRequest(workerOrigin) {
     });
   });
 
-  let m3u8 = `#EXTM3U x-tvg-url="https://epgs.nettv.com.np/webtv.xml.gz"\n`;
+  let m3u8 = `#EXTM3U x-tvg-url="webtv.xml.gz"\n`;
 	  m3u8 += '# FOSS Project Of Sunil Prasad @ sunilprasad.com.np\n\n';
 	  m3u8 += '# STRICT WARNING: This is a private server.\n';
 	  m3u8 += '# No one is authorized to use this except owner him/herself.\n';
@@ -94,11 +98,13 @@ async function handlePlaylistRequest(workerOrigin) {
 
   return new Response(m3u8, {
 	headers: {
-	  'Content-Type': 'text/plain',
-	  'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/x-mpegURL', 
+    'Content-Disposition': 'inline; filename="webtv.m3u8"',
+    'Access-Control-Allow-Origin': '*',
 	  'Access-Control-Allow-Methods': 'GET',
-	  'Access-Control-Allow-Headers': 'Authorization'
-	}
+	  'Access-Control-Allow-Headers': 'Authorization',
+    'Cache-Control': 'no-cache, no-store, must-revalidate'
+  }
   });
 }
 
@@ -232,6 +238,7 @@ function renderLoginPage() {
     }
     .panel { display: none; } 
     .panel.active { display: block; }
+    
     input, textarea {
       width: 100%;
       padding: 12px;
@@ -246,6 +253,7 @@ function renderLoginPage() {
       border-color: #10a37f;
       box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
     }
+
     button {
       width: 100%;
       padding: 12px;
@@ -263,11 +271,16 @@ function renderLoginPage() {
     button:active {
       transform: scale(0.98);
     }
+
     #msg {
       text-align: center;
       font-size: 13px;
       margin-top: 15px;
       color: #666;
+    }
+    a {
+      color: #10a37f;
+      text-decoration: none;
     }
     .hidden { display: none; }
   </style>
