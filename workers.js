@@ -15,6 +15,10 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
 });
 
+addEventListener('scheduled', event => {
+  event.waitUntil(handleScheduled(event));
+});
+
 async function handleRequest(req) {
   const url = new URL(req.url);
   const path = url.pathname;
@@ -222,14 +226,12 @@ function renderLoginPage() {
       background: #eee;
       transition: background 0.2s;
     }
-    /* Replaced blue with #10a37f */
     .tab.active {
       background: #10a37f;
       color: #fff;
     }
     .panel { display: none; } 
     .panel.active { display: block; }
-    
     input, textarea {
       width: 100%;
       padding: 12px;
@@ -240,12 +242,10 @@ function renderLoginPage() {
       outline: none;
       transition: border-color 0.2s;
     }
-    /* Emerald focus ring instead of default blue */
     input:focus, textarea:focus {
       border-color: #10a37f;
       box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -263,17 +263,11 @@ function renderLoginPage() {
     button:active {
       transform: scale(0.98);
     }
-
     #msg {
       text-align: center;
       font-size: 13px;
       margin-top: 15px;
       color: #666;
-    }
-    /* Link style if you add them later */
-    a {
-      color: #10a37f;
-      text-decoration: none;
     }
     .hidden { display: none; }
   </style>
@@ -336,35 +330,48 @@ function renderLoginPage() {
   return new Response(html, { headers: { 'Content-Type': 'text/html' } });
 }
 
+async function handleScheduled(event) {
+  event.waitUntil(handleRefreshToken());
+}
+
 async function handleRefreshToken() {
   const data = await geniusTVtoken.get('Login');
   if (!data) return new Response('Unauthorized', { status: 302, headers: {'Location': '/login'} });
+  try {
+    const json = JSON.parse(data);
+    const jwt = JSON.parse(atob(json.access_token.split('.')[1]));
+    const authHeaders = { 
+      ...common_header, 
+      'Authorization': `Bearer ${json.access_token}`, 
+      'Content-Type': 'application/json' 
+    };
 
-  const json = JSON.parse(data);
-  const jwt = JSON.parse(atob(json.access_token.split('.')[1]));
-  const authHeaders = { ...common_header, 'Authorization': `Bearer ${json.access_token}`, 'Content-Type': 'application/json' };
+    const sessionRes = await fetch(`https://ott-auth.geniustv.geniussystems.com.np/resellers/${jwt.params.reseller_id}/subscribers/${jwt.sub}/sessions`, { headers: authHeaders });
+    const sessionJson = await sessionRes.json();
+    
+    if (!sessionJson || !sessionJson[0]) throw new Error('No active sessions');
+    const sessionId = sessionJson[0].id;
 
-  const sessionRes = await fetch(`https://ott-auth.geniustv.geniussystems.com.np/resellers/${jwt.params.reseller_id}/subscribers/${jwt.sub}/sessions`, { headers: authHeaders });
-  const sessionJson = await sessionRes.json();
-  const sessionId = sessionJson[0].id;
+    const refreshRes = await fetch('https://ott-auth.geniustv.geniussystems.com.np/v2/subscribers/refresh-token', {
+      method: 'POST',
+      headers: authHeaders,
+      body: JSON.stringify({ 
+        "session_id": sessionId, 
+        "refresh_token": json.refresh_token 
+      })
+    });
 
-  const refreshRes = await fetch('https://ott-auth.geniustv.geniussystems.com.np/v2/subscribers/refresh-token', {
-    method: 'POST',
-    headers: authHeaders,
-    body: JSON.stringify({ 
-      "session_id": sessionId, 
-      "refresh_token": json.refresh_token 
-    })
-  });
-
-  const refreshed = await refreshRes.json();
+    const refreshed = await refreshRes.json();
 
     if (refreshed && refreshed.access_token) {
       await geniusTVtoken.put('Login', JSON.stringify(refreshed));
-      return new Response('Session refreshed successfully.\n\nYou can automate this once every 24 hours using https://cron-job.org/', { headers: {'Content-Type': 'text/plain'}});
-    } else {
-      return new Response('Refresh failed: ' + JSON.stringify(refreshed), { status: 400 });
+      return new Response('Session refreshed successfully.\n\nYou can automate this once every 24 hours using https://cron-job.org/', { status: 200 });
     }
+    
+    return new Response('Refresh failed: ' + JSON.stringify(refreshed), { status: 400 });
+  } catch (err) {
+    return new Response(err.message, { status: 500 });
+  }
 }
 
 async function handleWmsRequest() {
