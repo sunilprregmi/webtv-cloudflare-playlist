@@ -1,17 +1,27 @@
 WebTV Cloudflare Playlist License
 
-Copyright (c) 2025 Sunil Prasad Regmi
+Copyright (c) 2025-2026 Sunil Prasad Regmi
 
-Permission is granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, and distribute the Software for personal, non-commercial purposes, subject to the following conditions:
 
 1. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-2. The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the Software or the use or other dealings in the Software.
+
+2. This Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the Software or the use or other dealings in the Software.
 
 Custom License Terms:
-1. This project is licensed under a Custom License that explicitly prohibits commercial use. All rights reserved.
-2. You may use this software for personal, non-commercial purposes only.
-3. Commercial use, redistribution, or modification for profit is strictly prohibited.
-4. You must maintain all copyright notices and attributions.
-5. No warranty is provided, and the developer assumes no liability for use of this software.
 
-Thank you for respecting these terms.
+1. NON-COMMERCIAL RESTRICTION: This project is licensed under a Custom License that explicitly prohibits commercial use. All rights reserved. You may not sell, lease, or use this software as part of a paid subscription service.
+
+2. PERSONAL USE ONLY: You may use this software for individual, private, and non-commercial research purposes only. Deployment must be for personal use and not for public distribution or broadcasting.
+
+3. PROHIBITION OF PROFIT: Redistribution, modification, or bundling of this software for profit or commercial gain is strictly prohibited. This includes using the software to generate revenue through advertising or data collection.
+
+4. ATTRIBUTION: You must maintain all original copyright notices, headers, and links to the author's official GitHub handle in all versions of the code.
+
+5. API COMPLIANCE AND LIABILITY: The developer is not responsible for any actions taken by third-party service providers (such as ISPs or IPTV platforms) in response to the use of this software, including but not limited to account suspension, IP blocking, or legal action.
+
+6. NO DERIVATIVE MONETIZATION: Any forks or modified versions of this software must remain free of charge and must carry this same restrictive non-commercial license.
+
+7. TERMINATION: Any violation of these terms automatically terminates your permission to use the Software.
+
+Thank you for respecting the effort put into this project and using it responsibly.
